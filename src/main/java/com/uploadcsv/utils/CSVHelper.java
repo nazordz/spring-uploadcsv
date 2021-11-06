@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 
 public class CSVHelper {
     private static final String TYPE = "text/csv";
-    private static String[] HEADERS = {"Name", "Title", "Discription", "Price"};
+    private static String[] HEADERS = {"Name", "Description", "Price"};
 
     public static boolean hasCSVFormat(MultipartFile file){
         if (!TYPE.equals(file.getContentType())) {
@@ -29,14 +29,14 @@ public class CSVHelper {
     public static List<Book> csvToBooks(InputStream input) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
-            // CSVFormat.builder(HEADERS);
-            CSVParser parser = new CSVParser(bufferedReader, CSVFormat.DEFAULT.builder().setTrim(true).setHeader(HEADERS).build());
+            CSVParser parser = new CSVParser(bufferedReader, CSVFormat.DEFAULT.builder().setTrim(true).setHeader(HEADERS).setSkipHeaderRecord(true).build());
             List<Book> books = new ArrayList<>();
             Iterable<CSVRecord> csvRecords = parser.getRecords();
             for (CSVRecord csvRecord: csvRecords) {
                 Book book = new Book();
-                book.setName(csvRecord.get("Title"));
+                book.setName(csvRecord.get("Name"));
                 book.setDescription(csvRecord.get("Description"));
+                book.setPrice(0);
                 book.setPrice(Double.parseDouble(csvRecord.get("Price")));
                 books.add(book);
             }
